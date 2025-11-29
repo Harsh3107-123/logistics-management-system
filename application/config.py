@@ -17,4 +17,4 @@ class local_development_config(config):
 # This protects against attacks like "rainbow table" lookups, where pre-computed hashes are used to find passwords.
     
     WTF_CSRF_ENABLED=False
-    SECURITY_TOKEN_AUTHENTICATION_HEADER="Authentication Token"
+    SECURITY_TOKEN_AUTHENTICATION_HEADER="Authentication-Token"

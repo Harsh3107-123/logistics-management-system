@@ -14,8 +14,8 @@ def admin_home():
 @app.route("/api/user")
 @auth_required("token")
 @roles_required("user")
-# @roles_required(["user","admin"]) #works as and means both user and admin are required
-# @roles_accepted(["user","admin"]) #works as the or means either he should be admin or user
+# @roles_required("user","admin") #works as and means both user and admin are required
+# @roles_accepted("user","admin") #works as the or means either he should be admin or user
 def user_home():
     user=current_user
     return jsonify({
@@ -24,6 +24,7 @@ def user_home():
         "password":user.password
         })
     
+#405 means method not allowed
 @app.route("/api/register",methods=["POST"])
 def create_user():
     credentials=request.get_json()
@@ -33,12 +34,11 @@ def create_user():
                                            password=hash_password(credentials["password"]),
                                            roles=["user"])
         db.session.commit()
+        # new entity is created
         return jsonify({
             "message":"User Created Successfully"
         }),201
-        
+    #bad request
     return jsonify({
         "message":"User already exists"
-    }),400
-    
-    
+    }), 400

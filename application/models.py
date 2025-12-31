@@ -29,7 +29,8 @@ class userroles(db.Model):
 class city(db.Model):
     id=db.Column(db.Integer,primary_key=True)
     name=db.Column(db.String,nullable=False)
-    
+   
+# one user and many transaction 
 class transaction(db.Model):
     id=id=db.Column(db.Integer,primary_key=True)
     name=db.Column(db.String,nullable=False)

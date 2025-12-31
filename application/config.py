@@ -1,10 +1,11 @@
+#BASE CONFIGURATION
 class config():
-    DEBUG=False
-    SQLALCHEMY_TRACK_MODIFICATION=True
+    DEBUG=False# make sure the things get auto-reload and shows errors in debuggers bad as it exposes the system 
+    SQLALCHEMY_TRACK_MODIFICATION=True #track Object changes and send signals
     
 class local_development_config(config):
     DEBUG=True
-    SQLALCHEMY_DATABASE_URI="sqlite:///logistics.db"
+    SQLALCHEMY_DATABASE_URI="sqlite:///logistics.db"#provides the name of the database
     
     
     SECRET_KEY="this is a secret key" #THIS IS USED FOR HASHING USER CREDENTIALS IN THE SESSION 
@@ -16,5 +17,8 @@ class local_development_config(config):
 # Even if two users have the same password, adding a unique salt to each password before hashing will result in completely different hashes.
 # This protects against attacks like "rainbow table" lookups, where pre-computed hashes are used to find passwords.
     
-    WTF_CSRF_ENABLED=False
+    WTF_CSRF_ENABLED=False #developing API purpose we have kept it of
     SECURITY_TOKEN_AUTHENTICATION_HEADER="Authentication-Token"
+    # When an API request comes in, check this header to find the user's authentication token.
+    # Tokens are like a "secret key" that identifies the user
+    # Flask-Security generates a token using: User ID,SECRET_KEY,SECURITY_PASSWORD_SALT,Timestamp   

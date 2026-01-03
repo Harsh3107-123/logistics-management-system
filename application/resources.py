@@ -73,7 +73,7 @@ class TransApi(Resource):
     @auth_required("token")
     @roles_required("user")
     def post(self):
-        # data reading happens here
+        # data reading happens here json ----> python_dictionary
         args=parser.parse_args()
         try:
             Transaction=transaction(name=args["name"],
@@ -92,5 +92,45 @@ class TransApi(Resource):
         except:
             return{
                 "message":"One or more fields are missing"
-            },400                   
-api.add_resource(TransApi,"/api/get","/api/create")
+            },400 
+        
+    @auth_required("token")
+    @roles_required("user")
+    def put(self,trans_id):
+        args=parser.parse_args()
+        trans=transaction.query.get(trans_id)
+        if  args["name"]==None:
+            return {
+                "message" : "name is required"
+            }
+        trans=transaction.query.get(trans_id)   
+        trans.name=args["name"]
+        trans.type=args["type"]
+        trans.date=args["date"]
+        trans.source=args["source"]
+        trans.destination=args["destination"]
+        trans.description=args["description"]
+        db.session.commit()
+        return {
+            "message":"Transaction updated successfully!"
+        }
+        
+    @auth_required("token")
+    @auth_required("user")
+    def delete(self,trans_id):
+        trans=transaction.query.get(trans_id)
+        if trans:
+            db.session.delete(trans)
+            db.session.commit()
+            return {
+                "message":"transaction deleted successfully"
+            },200
+        else:
+            return {
+                "message":"Transaction not found"
+            },404
+            
+    
+          
+                      
+api.add_resource(TransApi,"/api/get","/api/create","/api/update/<int:trans_id>","/api/delete/<int:trans_id>")

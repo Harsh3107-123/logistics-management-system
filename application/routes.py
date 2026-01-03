@@ -1,8 +1,14 @@
-from flask import current_app as app,jsonify,request
+from flask import current_app as app,jsonify,request,render_template
 from .models import transaction
 from application.database import db
 from flask_security import auth_required,roles_required,current_user,login_user
 from werkzeug.security import check_password_hash,generate_password_hash
+
+
+#This is our entry point for vue app
+@app.route("/")
+def home():
+    return render_template("index.html")
 
 @app.route("/api/admin")
 @auth_required("token")

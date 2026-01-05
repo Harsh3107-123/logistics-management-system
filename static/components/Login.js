@@ -5,7 +5,7 @@ export default {
       <div class="col" style="height: 750px;">
         <div class="border mx-auto mt-5" style="height: 400px; width:300px;">
           <h2 class="text-center">Login Form</h2>
-
+          <p>this.message</p>
           <div>
             <label for="email">Enter your Email</label>
             <input type="email" id="email" v-model="formData.email">
@@ -32,7 +32,8 @@ export default {
       formData: {
         email: "",
         password: ""
-      }
+      },
+      message:""
     }
   },
 
@@ -46,13 +47,14 @@ export default {
         body: JSON.stringify(this.formData)
       })
         .then(response => response.json())
-        .then(data => {
+        .then(data => { if(Object.keys(data).includes("auth-token")){
           localStorage.setItem("auth_token", data["auth-token"])
           localStorage.setItem("id", data.id)
           this.$router.push("/dashboard")
-        })
-        .catch(err => {
-          console.error("Login error:", err)
+        }
+        else{
+          this.message=data.message
+        }
         })
     }
   }

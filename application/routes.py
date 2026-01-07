@@ -1,8 +1,9 @@
 from flask import current_app as app,jsonify,request,render_template
 from .models import transaction
 from application.database import db
-from flask_security import auth_required,roles_required,current_user,login_user
+from flask_security import auth_required,roles_required,current_user,login_user,roles_accepted
 from werkzeug.security import check_password_hash,generate_password_hash
+from .utils import roles_list
 
 
 #This is our entry point for vue app
@@ -10,18 +11,18 @@ from werkzeug.security import check_password_hash,generate_password_hash
 def home():
     return render_template("index.html")
 
-@app.route("/api/admin")
-@auth_required("token")
-@roles_required("admin")
-def admin_home():
-    return jsonify({
-        "name":"Admin",
-        "message":"Admin has logged in successfully"
-    })
+# @app.route("/api/admin")
+# @auth_required("token")
+# @roles_required("admin")
+# def admin_home():
+#     return jsonify({
+#         "name":"Admin",
+#         "message":"Admin has logged in successfully"
+#     })
         
 @app.route("/api/user")
 @auth_required("token")
-@roles_required("user")
+@roles_accepted("user","admin")
 # @roles_required("user","admin") #works as and means both user and admin are required
 # @roles_accepted("user","admin") #works as the or means either he should be admin or user
 def user_home():
@@ -29,7 +30,7 @@ def user_home():
     return jsonify({
         "name":user.username,
         "email":user.email,
-        "password":user.password
+        "roles":roles_list(user.roles)
         })
 
 @app.route("/api/login",methods=["POST"])
@@ -53,7 +54,9 @@ def user_login():
             return jsonify({
                 "id":user.id,
                 "username":user.username,
-                "auth-token":user.get_auth_token()
+                "auth-token":user.get_auth_token(),
+                "roles":roles_list(user.roles)
+                # "roles":user.roles
             })
         else:
             return jsonify({

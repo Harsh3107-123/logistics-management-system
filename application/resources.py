@@ -2,6 +2,8 @@
 from flask_restful import Api,Resource,reqparse
 from .models import *
 from flask_security import auth_required,roles_required,roles_accepted,current_user
+import datetime
+from .utils import roles_list
 
 #Api it is a wrapper CREATES API INSTANCE
 api=Api()
@@ -12,7 +14,7 @@ parser=reqparse.RequestParser()
 
 parser.add_argument("name")
 parser.add_argument("type")
-parser.add_argument("date")
+# parser.add_argument("date")
 parser.add_argument("source")
 parser.add_argument("destination")
 parser.add_argument("description")
@@ -25,11 +27,11 @@ Tells the API: “I am expecting this key from the client”
 
 These fields are optional by default'''
 
-def roles_list(roles):
-    role_list=[]
-    for role in roles:
-        role_list.append(role.name)
-    return role_list
+# def roles_list(roles):
+#     role_list=[]
+#     for role in roles:
+#         role_list.append(role.name)
+#     return role_list
 
 # Serialization: Converting an object into a transmittable format like JSON.
 
@@ -78,7 +80,7 @@ class TransApi(Resource):
         try:
             Transaction=transaction(name=args["name"],
                                     type=args["type"],
-                                    date=args["date"],
+                                    date=datetime.datetime.now(),
                                     source=args["source"],
                                     destination=args["destination"],
                                     description=args["description"],

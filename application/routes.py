@@ -99,12 +99,12 @@ def payment(trans_id):
 
 @app.route("/api/delivery/<int:trans_id>",methods=["POST"])
 @auth_required("token")
-@roles_required("user")
+@roles_required("admin")
 def delivery(trans_id):
     trans=transaction.query.get(trans_id)
     data=request.get_json()
     trans.delivery_status=data["delivery_status"]
-    db.session.commmit()
+    db.session.commit()
     return jsonify({
         "message":"delivery status updated"
     }),200

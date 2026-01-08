@@ -18,12 +18,7 @@ export default {
                     </h5>
 
                     <p class="card-text">
-                        Created at: {{ t.date }}
-                    </p>
-
-                    <!-- Paid -->
-                    <p v-if="t.internal_status === 'paid'" class="card-text">
-                        Delivery: {{ t.delivery }}
+                        Created at: {{ t.date.substring(0,11) }}
                     </p>
 
                     <p class="card-text">
@@ -34,16 +29,35 @@ export default {
                         From {{ t.source }} to {{ t.destination }}
                     </p>
 
-                    <!-- Pending -->
+                    <!-- REQUESTED -->
                     <p v-if="t.internal_status === 'requested'" class="card-text">
-                        <router-link :to=" {name : 'update' , params:{id : t.id} } " class="btn btn-warning me-2">Update</router-link>
+                        <router-link
+                            :to="{ name: 'update', params: { id: t.id } }"
+                            class="btn btn-warning me-2"
+                        >
+                            Update
+                        </router-link>
                         <button class="btn btn-danger">Delete</button>
                     </p>
 
-                    <!-- Requested -->
+                    <!-- PENDING -->
                     <p v-if="t.internal_status === 'pending'" class="card-text">
                         Amount: {{ t.amount }}
-                        <button class="btn btn-success ms-2">Pay</button>
+                        <button @click="()=>pay(t.id) "  class="btn btn-success ms-2">Pay</button>
+                    </p>
+
+                    <!-- PAID -->
+                    <p v-if="t.internal_status === 'paid'" class="card-text text-success fw-bold">
+                        ✔ Paid
+                    </p>
+
+                    <p v-if="t.internal_status === 'paid'" class="card-text">
+                        Delivery: {{ t.delivery }}
+                    </p>
+
+                    <!-- ADMIN PROCESSING -->
+                    <p v-if="t.internal_status === 'paid'" class="card-text text-muted">
+                        Status will be updated soon
                     </p>
 
                 </div>
@@ -53,7 +67,7 @@ export default {
         <!-- Right column -->
         <div class="col-4 border" style="height: 750px;">
             <div class="my-2">
-                <h2> Create Transaction </h2>
+                <h2>Create Transaction</h2>
 
                 <div class="mb-3">
                     <label for="name" class="form-label">Transaction Name</label>
@@ -66,34 +80,34 @@ export default {
                 </div>
 
                 <div class="d-flex">
-                    <div class=" mx-2 mb-3">
-                        <label for="source" class="form-label">Source</label>
-                        <select class="form-select" aria-label="Default select example" v-model="transData.source">
+                    <div class="mx-2 mb-3">
+                        <label class="form-label">Source</label>
+                        <select class="form-select" v-model="transData.source">
                             <option selected>Open this select menu</option>
-                            <option value="Mumbai">Mumbai</option>
-                            <option value="Delhi">Delhi</option>
-                            <option value="Chennai">Chennai</option>
-                            <option value="Kolkata">Kolkata</option>
-                            <option value="Pune">Pune</option>
+                            <option>Mumbai</option>
+                            <option>Delhi</option>
+                            <option>Chennai</option>
+                            <option>Kolkata</option>
+                            <option>Pune</option>
                         </select>
                     </div>
 
                     <div class="mx-2 mb-3">
-                        <label for="destination" class="form-label">Destination</label>
-                        <select class="form-select" aria-label="Default select example" v-model="transData.destination">
+                        <label class="form-label">Destination</label>
+                        <select class="form-select" v-model="transData.destination">
                             <option selected>Open this select menu</option>
-                            <option value="Mumbai">Mumbai</option>
-                            <option value="Delhi">Delhi</option>
-                            <option value="Chennai">Chennai</option>
-                            <option value="Kolkata">Kolkata</option>
-                            <option value="Pune">Pune</option>
+                            <option>Mumbai</option>
+                            <option>Delhi</option>
+                            <option>Chennai</option>
+                            <option>Kolkata</option>
+                            <option>Pune</option>
                         </select>
                     </div>
                 </div>
 
                 <div class="mb-3">
-                    <label for="description" class="form-label">Example textarea</label>
-                    <textarea class="form-control" id="description" v-model="transData.description" rows="3"></textarea>
+                    <label class="form-label">Description</label>
+                    <textarea class="form-control" v-model="transData.description" rows="3"></textarea>
                 </div>
 
                 <div class="mb-3 text-end">
@@ -103,6 +117,7 @@ export default {
         </div>
     </div>
 </div>
+
   `,
 
   data() {
@@ -159,7 +174,17 @@ export default {
     })
     .then(response => response.json())
     .then(data => this.transaction=data)
+    },
+    pay(id){
+        fetch(`/api/pay/${id}`,{
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "Authentication-Token": localStorage.getItem("auth_token")
+      }}).then(response => response.json())
+      .then(data=>console.log(data),
+      this.$router.go(0)
+    )
     }
-
   }
 }

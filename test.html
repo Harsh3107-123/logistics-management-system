@@ -48,3 +48,68 @@
 
     </div>
 </div>
+
+
+        <div >
+            <h4>Paid</h4>
+            <table class="table table-striped table-sm">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Package</th>
+                        <th>Source</th>
+                        <th>Dest</th>
+                        <th>Created at</th>
+                        <th>Amt</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <template v-for="t in transaction" :key="t.id">
+                        <tr v-if="t.internal_status === 'paid'">
+                            <td>{{ t.id }}</td>
+                            <td>{{ t.name }}</td>
+                            <td>{{ t.source }}</td>
+                            <td>{{ t.destination }}</td>
+                            <td>{{ t.date }}</td>
+                            <td>{{ t.amount }}</td>
+                            <td> 
+                            <button class="btn btn-danger">Reject<button>
+                            </td>
+                        </tr>
+                    </template>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</div>
+
+
+
+
+<!-- Right column -->
+        <div class="col-4 border" style="height: 750px;">
+            <div class="my-2">
+                <h2>Review Transaction</h2>'
+                <div class="mb-3">
+                    <p class="fs-3">Transaction Name</p>
+                    <p>{{t.name}}</p>
+                </div>
+                <div class="mb-3">
+                    <p class="fs-3">Transaction Type</p>
+                    <p>{{t.type}}</p>
+                </div>
+                <div class="mb-3">
+                    <p>{{t.source}} to {{t.destination}}</p>
+                </div>
+                <div class="mb-3">
+                    <label for="delivery" class="form-label">Delivery Date</label>
+                    <input type="date" class="form-control" id="delivery" v-model="t.delivery">
+                </div>  
+                <div class="mb-3">
+                    <label for="amount" class="form-label">Amount</label>
+                    <input type="number" class="form-control" id="amount" v-model="t.amount">
+                </div>                  
+            </div>
+        </div>
